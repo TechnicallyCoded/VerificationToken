@@ -83,7 +83,7 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
             }
 
             if (!warnedPlayers.contains(playerUUID)) {
-                player.sendMessage(ChatColor.RED + "WARNING: Your token is a private code and sharing it to non-staff will lead to a ban on your account! Run the command again to show the code.");
+                player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "WARNING: Your token is a private code and sharing it to non-staff will lead to a ban on your account! Run the command again to show the code.");
                 warnedPlayers.add(playerUUID);
             } else {
                 player.sendMessage(ChatColor.GREEN + "Your secret token is: " + ChatColor.AQUA + pin);
