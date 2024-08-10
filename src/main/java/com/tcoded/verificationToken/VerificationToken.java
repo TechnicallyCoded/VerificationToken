@@ -36,7 +36,11 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
         pinsFile = new File(getDataFolder(), "pins.yml");
         if (!pinsFile.exists()) {
             pinsFile.getParentFile().mkdirs();
-            saveResource("pins.yml", false);
+            try {
+                pinsFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         pinsConfig = YamlConfiguration.loadConfiguration(pinsFile);
     }
