@@ -42,10 +42,12 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
     }
 
     private void savePinsFile() {
-        try {
-            pinsConfig.save(pinsFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (pinsConfig != null) {
+            try {
+                pinsConfig.save(pinsFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
