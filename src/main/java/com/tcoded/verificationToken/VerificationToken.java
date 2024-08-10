@@ -7,23 +7,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
-public final class VerificationToken extends JavaPlugin implements CommandExecutor {
+public final class VerificationToken extends JavaPlugin implements CommandExecutor, Listener {
 
     private FileConfiguration pinsConfig;
     private File pinsFile;
+    private Set<UUID> warnedPlayers;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         loadPinsFile();
         this.getCommand("mytoken").setExecutor(this);
+        warnedPlayers = new HashSet<>();
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     @Override
@@ -74,9 +82,21 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
                 savePinsFile();
             }
 
-            player.sendMessage(ChatColor.GREEN + "Your secret token is: " + ChatColor.AQUA + pin);
+            if (!warnedPlayers.contains(playerUUID)) {
+                player.sendMessage(ChatColor.RED + "WARNING: Your token is a private code and sharing it to non-staff will lead to a ban on your account! Run the command again to show the code.");
+                warnedPlayers.add(playerUUID);
+            } else {
+                player.sendMessage(ChatColor.GREEN + "Your secret token is: " + ChatColor.AQUA + pin);
+            }
             return true;
         }
         return false;
+    }
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+        warnedPlayers.remove(playerUUID);
     }
 }
