@@ -25,10 +25,14 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
     private File pinsFile;
     private Set<UUID> warnedPlayers;
 
+    private String warningMessage;
+    private String tokenMessage;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         loadPinsFile();
+        loadConfig();
         this.getCommand("mytoken").setExecutor(this);
         warnedPlayers = new HashSet<>();
         getServer().getPluginManager().registerEvents(this, this);
@@ -63,6 +67,12 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
         }
     }
 
+    private void loadConfig() {
+        saveDefaultConfig();
+        warningMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages.warning"));
+        tokenMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("messages.token"));
+    }
+
     private String generateRandomPin() {
         Random random = new Random();
         int pin = 100000 + random.nextInt(900000);
@@ -83,10 +93,10 @@ public final class VerificationToken extends JavaPlugin implements CommandExecut
             }
 
             if (!warnedPlayers.contains(playerUUID)) {
-                player.sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "WARNING: Your token is a private code and sharing it to non-staff will lead to a ban on your account! Run the command again to show the code.");
+                player.sendMessage(warningMessage);
                 warnedPlayers.add(playerUUID);
             } else {
-                player.sendMessage(ChatColor.GREEN + "Your secret token is: " + ChatColor.AQUA + pin);
+                player.sendMessage(tokenMessage.replace("{token}", pin));
             }
             return true;
         }

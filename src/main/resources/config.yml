@@ -1,0 +1,3 @@
+messages:
+  warning: "&c&lWARNING: Your token is a private code and sharing it to non-staff will lead to a ban on your account! Run the command again to show the code."
+  token: "&aYour secret token is: &b{token}"
