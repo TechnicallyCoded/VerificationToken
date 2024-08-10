@@ -1,0 +1,8 @@
+name: VerificationToken
+version: '1.0-SNAPSHOT'
+main: com.tcoded.verificationToken.VerificationToken
+api-version: '1.18'
+commands:
+  mytoken:
+    description: Generates or retrieves your verification token
+    usage: /mytoken
