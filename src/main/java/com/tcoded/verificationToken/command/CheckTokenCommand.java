@@ -1,15 +1,17 @@
 package com.tcoded.verificationToken.command;
 
+import com.tcoded.verificationToken.VerificationToken;
 import com.tcoded.verificationToken.manager.PinManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
 
@@ -32,19 +34,22 @@ public class CheckTokenCommand implements CommandExecutor {
         UUID playerUUID = pinManager.getUUIDFromToken(token);
 
         if (playerUUID != null) {
-            Player player = Bukkit.getPlayer(playerUUID);
-            if (player != null) {
-                sendPlayerDetails(sender, player.getName(), playerUUID);
-            } else {
-                sendPlayerDetails(sender, "Unknown", playerUUID);
-            }
+            VerificationToken plugin = JavaPlugin.getPlugin(VerificationToken.class);
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                OfflinePlayer player = Bukkit.getPlayer(playerUUID);
+                if (player == null) {
+                    player = Bukkit.getOfflinePlayer(playerUUID);
+                }
+
+                String name = player.getName();
+                if (name != null) sendPlayerDetails(sender, name, playerUUID);
+                else sendPlayerDetails(sender, "Unknown", playerUUID);
+            });
         } else {
             sendNotFoundMessage(sender, token);
         }
-
         return true;
     }
-
 
 
     private void sendPlayerDetails(CommandSender sender, String playerName, UUID playerUUID) {
