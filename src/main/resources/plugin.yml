@@ -1,5 +1,5 @@
 name: VerificationToken
-version: 1.0-SNAPSHOT
+version: ${version}
 main: com.tcoded.verificationToken.VerificationToken
 api-version: 1.18
 commands:
@@ -13,8 +13,7 @@ commands:
     usage: /checktoken <token>
     permission: verificationtoken.check
 
-
-permission:
+permissions:
   verificationtoken.mytoken:
     description: Permission to get your token
     default: true
